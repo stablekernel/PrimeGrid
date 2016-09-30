@@ -24,17 +24,27 @@ class PrimeGridLayout: UICollectionViewLayout, PrimeGridLayoutDelegate {
     }
 
     var scrollDirection: UICollectionViewScrollDirection = .vertical
-    var transverseItemsCount: UInt = 1
     var itemSpacing: CGFloat = 0
+    var transverseItemsCount: UInt {
+        get {
+            return UInt(intTransverseItemsCount)
+        }
+        set {
+            intTransverseItemsCount = newValue == 0 ? 1 : Int(newValue)
+        }
+    }
 
     weak var delegate: PrimeGridLayoutDelegate?
 
+    private var intTransverseItemsCount = 1
     private var contentWidth: CGFloat = 0
     private var contentHeight: CGFloat = 0
     private var itemDimension: CGFloat = 0
 
     private var sectionedItemGrid: Array<Array<Array<Bool>>> = []
     private var itemAttributesCache: Array<UICollectionViewLayoutAttributes> = []
+
+    private typealias ItemFrame = (section: Int, longitude: Int, transverse: Int, scale: Int)
 
     // MARK: - UICollectionView Layout
 
@@ -52,31 +62,40 @@ class PrimeGridLayout: UICollectionViewLayout, PrimeGridLayoutDelegate {
 
         itemDimension = (transverseDimension - (CGFloat(transverseItemsCount) * itemSpacing) + itemSpacing) / CGFloat(transverseItemsCount)
 
-        sectionedItemGrid = []
-        let sectionCount = collectionView.numberOfSections
-        for sectionIndex in 0 ..< sectionCount {
+        for section in 0 ..< collectionView.numberOfSections {
             sectionedItemGrid.append([])
-            var sectionTransverseIndex: UInt = 0, sectionLongitudinalIndex: UInt = 0
-            for itemIndex in 0 ..< collectionView.numberOfItems(inSection: sectionIndex) {
-                if sectionTransverseIndex == transverseItemsCount {
+
+            var longitude = 0, transverse = 0
+            for item in 0 ..< collectionView.numberOfItems(inSection: section) {
+                if transverse == intTransverseItemsCount {
                     // Reached end of row in .vertical or column in .horizontal
-                    sectionTransverseIndex = 0
-                    sectionLongitudinalIndex += 1
+                    transverse = 0
+                    longitude += 1
                 }
 
-                let (itemFits, layoutAttributes) = attributes(forTransverseIndex: sectionTransverseIndex, longitudinalIndex: sectionLongitudinalIndex, indexPath: IndexPath(item: itemIndex, section: sectionIndex))
-                itemAttributesCache.append(layoutAttributes)
-                if (itemFits) {
-                    sectionTransverseIndex += 1
+                let itemIndexPath = IndexPath(item: item, section: section)
+                let itemScale = indexableScale(forItemAt: itemIndexPath)
+                let intendedFrame = ItemFrame(section, longitude, transverse, itemScale)
+                let (itemFrame, didFitInOriginalFrame) = nextAvailableFrame(startingAt: intendedFrame)
+
+                reserveItemGrid(frame: itemFrame)
+                let itemAttributes = layoutAttributes(for: itemIndexPath, at: itemFrame)
+
+                itemAttributesCache.append(itemAttributes)
+
+                // Update variable dimension
+                if scrollDirection == .vertical && itemAttributes.frame.maxY > contentHeight {
+                    contentHeight = itemAttributes.frame.maxY
+                } else if itemAttributes.frame.maxX > contentWidth {
+                    contentWidth = itemAttributes.frame.maxX
                 }
 
-                if scrollDirection == .vertical && layoutAttributes.frame.maxY > contentHeight {
-                    contentHeight = layoutAttributes.frame.maxY
-                } else if layoutAttributes.frame.maxX > contentWidth {
-                    contentWidth = layoutAttributes.frame.maxX
+                if (didFitInOriginalFrame) {
+                    transverse += 1
                 }
             }
         }
+        sectionedItemGrid = [] // Only used during prepare, free up some memory
     }
 
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
@@ -109,72 +128,70 @@ class PrimeGridLayout: UICollectionViewLayout, PrimeGridLayoutDelegate {
 
     // MARK: - Private
 
-    private func attributes(forTransverseIndex transverseIndex: UInt, longitudinalIndex: UInt, indexPath: IndexPath) -> (itemFitsAtGivenLocation: Bool, attributes: UICollectionViewLayoutAttributes) {
-        let itemScale: UInt = {
-            var itemScale = (delegate ?? self).scaleForItem(inCollectionView: collectionView!, withLayout: self, atIndexPath: indexPath)
-            if itemScale > transverseItemsCount {
-                itemScale = transverseItemsCount
-            }
-            return itemScale - 1 // Using with indices, want 0-based
-        }()
-
-        // Find a location for the item
-        ensureGridSize(forSection: indexPath.section, longitudinalIndex: longitudinalIndex + itemScale)
-
-        var walkingTransverseIndex = transverseIndex, walkingLongitudinalIndex = longitudinalIndex
-        while !isSpaceAvailable(inSection: indexPath.section, atLongitudinalIndex: walkingLongitudinalIndex, transverseIndex: walkingTransverseIndex, itemScale: itemScale) {
-            walkingTransverseIndex += 1
-
-            if walkingTransverseIndex == transverseItemsCount || walkingTransverseIndex + itemScale == self.transverseItemsCount {
-                walkingTransverseIndex = 0
-                walkingLongitudinalIndex += 1
-
-                ensureGridSize(forSection: indexPath.section, longitudinalIndex: walkingLongitudinalIndex + itemScale)
-            }
+    private func indexableScale(forItemAt indexPath: IndexPath) -> Int {
+        var itemScale = (delegate ?? self).scaleForItem(inCollectionView: collectionView!, withLayout: self, atIndexPath: indexPath)
+        if itemScale > transverseItemsCount {
+            itemScale = transverseItemsCount
         }
-
-        // Should have enough room for item now in grid
-        // Mark occupying locations in item grid
-        for occupyingLongitudinalIndex in walkingLongitudinalIndex ... walkingLongitudinalIndex + itemScale {
-            for occupyingTransverseIndex in walkingTransverseIndex ... walkingTransverseIndex + itemScale {
-                sectionedItemGrid[indexPath.section][Int(occupyingLongitudinalIndex)][Int(occupyingTransverseIndex)] = true
-            }
-        }
-
-        // Create frame for item
-        let transverseOffset = CGFloat(walkingTransverseIndex) * (itemSpacing + itemDimension)
-        let longitudinalOffset = CGFloat(walkingLongitudinalIndex) * (itemSpacing + itemDimension)
-        let itemScaledDimension = itemDimension + (CGFloat(itemScale) * (itemSpacing + itemDimension))
-        let frame: CGRect
-        if scrollDirection == .vertical {
-            frame = CGRect(x: transverseOffset, y: longitudinalOffset, width: itemScaledDimension, height: itemScaledDimension)
-        } else {
-            frame = CGRect(x: longitudinalOffset, y: transverseOffset, width: itemScaledDimension, height: itemScaledDimension)
-        }
-
-        // Create attributes
-        let layoutAttributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
-        layoutAttributes.frame = frame
-
-        return (walkingTransverseIndex == transverseIndex && walkingLongitudinalIndex == longitudinalIndex, layoutAttributes)
+        return Int(itemScale - 1) // Using with indices, want 0-based
     }
 
-    private func ensureGridSize(forSection section: Int, longitudinalIndex: UInt) {
-        while UInt(sectionedItemGrid[section].count) <= longitudinalIndex {
-            let transverseOccupiedArray = Array<Bool>(repeating: false, count: Int(transverseItemsCount))
-            sectionedItemGrid[section].append(transverseOccupiedArray)
+    private func nextAvailableFrame(startingAt originalFrame: ItemFrame) -> (frame: ItemFrame, fitInOriginalFrame: Bool) {
+        var longitude = originalFrame.longitude, transverse = originalFrame.transverse
+        var newFrame = ItemFrame(originalFrame.section, longitude, transverse, originalFrame.scale)
+        while !isSpaceAvailable(for: newFrame) {
+            transverse += 1
+
+            // Reached end of transverse, restart on next longitude
+            if transverse == intTransverseItemsCount || transverse + originalFrame.scale == intTransverseItemsCount {
+                transverse = 0
+                longitude += 1
+            }
+
+            newFrame = ItemFrame(originalFrame.section, longitude, transverse, originalFrame.scale)
         }
+
+        return (newFrame, longitude == originalFrame.longitude && transverse == originalFrame.transverse)
     }
 
-    private func isSpaceAvailable(inSection section: Int, atLongitudinalIndex longitudinalIndex: UInt, transverseIndex: UInt, itemScale: UInt) -> Bool {
-        for longIndex in longitudinalIndex ... longitudinalIndex + itemScale {
-            for tranIndex in transverseIndex ... transverseIndex + itemScale {
-                if tranIndex >= transverseItemsCount || sectionedItemGrid[section][Int(longIndex)][Int(tranIndex)] {
+    private func isSpaceAvailable(for frame: ItemFrame) -> Bool {
+        for longitude in frame.longitude ... frame.longitude + frame.scale {
+            // Ensure we won't get off the end of the array
+            while sectionedItemGrid[frame.section].count <= longitude {
+                sectionedItemGrid[frame.section].append(Array(repeating: false, count: intTransverseItemsCount))
+            }
+
+            for transverse in frame.transverse ... frame.transverse + frame.scale {
+                if transverse >= intTransverseItemsCount || sectionedItemGrid[frame.section][longitude][transverse] {
                     return false
                 }
             }
         }
 
         return true
+    }
+
+    private func reserveItemGrid(frame: ItemFrame) {
+        for longitude in frame.longitude ... frame.longitude + frame.scale {
+            for transverse in frame.transverse ... frame.transverse + frame.scale {
+                sectionedItemGrid[frame.section][longitude][transverse] = true
+            }
+        }
+    }
+
+    private func layoutAttributes(for indexPath: IndexPath, at itemFrame: ItemFrame) -> UICollectionViewLayoutAttributes {
+        let layoutAttributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
+
+        let transverseOffset = CGFloat(itemFrame.transverse) * (itemSpacing + itemDimension)
+        let longitudinalOffset = CGFloat(itemFrame.longitude) * (itemSpacing + itemDimension)
+        let itemScaledDimension = itemDimension + (CGFloat(itemFrame.scale) * (itemSpacing + itemDimension))
+
+        if scrollDirection == .vertical {
+            layoutAttributes.frame = CGRect(x: transverseOffset, y: longitudinalOffset, width: itemScaledDimension, height: itemScaledDimension)
+        } else {
+            layoutAttributes.frame = CGRect(x: longitudinalOffset, y: transverseOffset, width: itemScaledDimension, height: itemScaledDimension)
+        }
+
+        return layoutAttributes
     }
 }
