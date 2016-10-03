@@ -10,12 +10,17 @@ import UIKit
 
 protocol GridLayoutDelegate: class {
     func scaleForItem(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, atIndexPath indexPath: IndexPath) -> UInt
+    func itemLongitudinalDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, transverseDimension: CGFloat) -> CGFloat
     func headerLongitudinalDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, transverseDimension: CGFloat) -> CGFloat
 }
 
 extension GridLayoutDelegate {
     func scaleForItem(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, atIndexPath indexPath: IndexPath) -> UInt {
         return 1
+    }
+
+    func itemLongitudinalDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, transverseDimension: CGFloat) -> CGFloat {
+        return transverseDimension
     }
 
     func headerLongitudinalDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, transverseDimension: CGFloat) -> CGFloat {
@@ -44,7 +49,8 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
     private var intTransverseItemsCount = 1
     private var contentWidth: CGFloat = 0
     private var contentHeight: CGFloat = 0
-    private var itemDimension: CGFloat = 0
+    private var itemTransverseDimension: CGFloat = 0
+    private var itemLongitudinalDimension: CGFloat = 0
 
     private var sectionedItemGrid: Array<Array<Array<Bool>>> = []
     private var headerAttributesCache: Array<UICollectionViewLayoutAttributes> = []
@@ -69,7 +75,8 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
         var additionalSectionSpacing: CGFloat = 0
         let headerLongitudinalDimension = (delegate ?? self).headerLongitudinalDimension(inCollectionView: collectionView, withLayout: self, transverseDimension: transverseDimension)
 
-        itemDimension = (transverseDimension - (CGFloat(transverseItemsCount) * itemSpacing) + itemSpacing) / CGFloat(transverseItemsCount)
+        itemTransverseDimension = (transverseDimension - (CGFloat(transverseItemsCount) * itemSpacing) + itemSpacing) / CGFloat(transverseItemsCount)
+        itemLongitudinalDimension = (delegate ?? self).itemLongitudinalDimension(inCollectionView: collectionView, withLayout: self, transverseDimension: itemTransverseDimension)
 
         for section in 0 ..< collectionView.numberOfSections {
             let itemCount = collectionView.numberOfItems(inSection: section)
@@ -241,14 +248,15 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
     private func layoutAttributes(for indexPath: IndexPath, at itemFrame: ItemFrame, with sectionOffset: CGFloat) -> UICollectionViewLayoutAttributes {
         let layoutAttributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
 
-        let transverseOffset = CGFloat(itemFrame.transverse) * (itemSpacing + itemDimension)
-        let longitudinalOffset = CGFloat(itemFrame.longitude) * (itemSpacing + itemDimension) + sectionOffset
-        let itemScaledDimension = itemDimension + (CGFloat(itemFrame.scale) * (itemSpacing + itemDimension))
+        let transverseOffset = CGFloat(itemFrame.transverse) * (itemSpacing + itemTransverseDimension)
+        let longitudinalOffset = CGFloat(itemFrame.longitude) * (itemSpacing + itemLongitudinalDimension) + sectionOffset
+        let itemScaledTransverseDimension = itemTransverseDimension + (CGFloat(itemFrame.scale) * (itemSpacing + itemTransverseDimension))
+        let itemScaledLongitudinalDimension = itemLongitudinalDimension + (CGFloat(itemFrame.scale) * (itemSpacing + itemLongitudinalDimension))
 
         if scrollDirection == .vertical {
-            layoutAttributes.frame = CGRect(x: transverseOffset, y: longitudinalOffset, width: itemScaledDimension, height: itemScaledDimension)
+            layoutAttributes.frame = CGRect(x: transverseOffset, y: longitudinalOffset, width: itemScaledTransverseDimension, height: itemScaledLongitudinalDimension)
         } else {
-            layoutAttributes.frame = CGRect(x: longitudinalOffset, y: transverseOffset, width: itemScaledDimension, height: itemScaledDimension)
+            layoutAttributes.frame = CGRect(x: longitudinalOffset, y: transverseOffset, width: itemScaledLongitudinalDimension, height: itemScaledTransverseDimension)
         }
 
         return layoutAttributes

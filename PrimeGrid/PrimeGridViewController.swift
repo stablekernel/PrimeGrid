@@ -206,6 +206,10 @@ class PrimeGridViewController: UIViewController, UICollectionViewDataSource, Gri
         return scale(forNumberData: data[indexPath.section][indexPath.row])
     }
 
+    func itemLongitudinalDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, transverseDimension: CGFloat) -> CGFloat {
+        return 0.8 * transverseDimension
+    }
+
     func headerLongitudinalDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, transverseDimension: CGFloat) -> CGFloat {
         return 60
     }
