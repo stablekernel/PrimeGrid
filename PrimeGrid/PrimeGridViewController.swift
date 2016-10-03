@@ -18,107 +18,127 @@ class PrimeGridViewController: UIViewController, UICollectionViewDataSource, Gri
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var gridLayout: GridLayout!
 
-    let data: Array<NumberData> = [
-        (1, false, false),
-        (2, true, false),
-        (3, true, true),
-        (4, false, false),
-        (5, true, false),
-        (6, false, false),
-        (7, true, true),
-        (8, false, false),
-        (9, false, false),
-        (10, false, false),
-        (11, true, false),
-        (12, false, false),
-        (13, true, false),
-        (14, false, false),
-        (15, false, false),
-        (16, false, false),
-        (17, true, false),
-        (18, false, false),
-        (19, true, false),
-        (20, false, false),
-        (21, false, false),
-        (22, false, false),
-        (23, true, false),
-        (24, false, false),
-        (25, false, false),
-        (26, false, false),
-        (27, false, false),
-        (28, false, false),
-        (29, true, false),
-        (30, false, false),
-        (31, true, true),
-        (32, false, false),
-        (33, false, false),
-        (34, false, false),
-        (35, false, false),
-        (36, false, false),
-        (37, true, false),
-        (38, false, false),
-        (39, false, false),
-        (40, false, false),
-        (41, true, false),
-        (42, false, false),
-        (43, true, false),
-        (44, false, false),
-        (45, false, false),
-        (46, false, false),
-        (47, true, false),
-        (48, false, false),
-        (49, false, false),
-        (50, false, false),
-        (51, false, false),
-        (52, false, false),
-        (53, true, false),
-        (54, false, false),
-        (55, false, false),
-        (56, false, false),
-        (57, false, false),
-        (58, false, false),
-        (59, true, false),
-        (60, false, false),
-        (61, true, false),
-        (62, false, false),
-        (63, false, false),
-        (64, false, false),
-        (65, false, false),
-        (66, false, false),
-        (67, true, false),
-        (68, false, false),
-        (69, false, false),
-        (70, false, false),
-        (71, true, false),
-        (72, false, false),
-        (73, true, false),
-        (74, false, false),
-        (75, false, false),
-        (76, false, false),
-        (77, false, false),
-        (78, false, false),
-        (79, true, false),
-        (80, false, false),
-        (81, false, false),
-        (82, false, false),
-        (83, true, false),
-        (84, false, false),
-        (85, false, false),
-        (86, false, false),
-        (87, false, false),
-        (88, false, false),
-        (89, true, false),
-        (90, false, false),
-        (91, false, false),
-        (92, false, false),
-        (93, false, false),
-        (94, false, false),
-        (95, false, false),
-        (96, false, false),
-        (97, true, false),
-        (98, false, false),
-        (99, false, false),
-        (100, false, false),
+    let data: Array<Array<NumberData>> = [
+        [
+            (1, false, false),
+            (2, true, false),
+            (3, true, true),
+            (4, false, false),
+            (5, true, false),
+            (6, false, false),
+            (7, true, true),
+            (8, false, false),
+            (9, false, false),
+            (10, false, false),
+        ],
+        [
+            (11, true, false),
+            (12, false, false),
+            (13, true, false),
+            (14, false, false),
+            (15, false, false),
+            (16, false, false),
+            (17, true, false),
+            (18, false, false),
+            (19, true, false),
+            (20, false, false),
+        ],
+        [
+            (21, false, false),
+            (22, false, false),
+            (23, true, false),
+            (24, false, false),
+            (25, false, false),
+            (26, false, false),
+            (27, false, false),
+            (28, false, false),
+            (29, true, false),
+            (30, false, false),
+        ],
+        [
+            (31, true, true),
+            (32, false, false),
+            (33, false, false),
+            (34, false, false),
+            (35, false, false),
+            (36, false, false),
+            (37, true, false),
+            (38, false, false),
+            (39, false, false),
+            (40, false, false),
+        ],
+        [
+            (41, true, false),
+            (42, false, false),
+            (43, true, false),
+            (44, false, false),
+            (45, false, false),
+            (46, false, false),
+            (47, true, false),
+            (48, false, false),
+            (49, false, false),
+            (50, false, false),
+        ],
+        [
+            (51, false, false),
+            (52, false, false),
+            (53, true, false),
+            (54, false, false),
+            (55, false, false),
+            (56, false, false),
+            (57, false, false),
+            (58, false, false),
+            (59, true, false),
+            (60, false, false),
+        ],
+        [
+            (61, true, false),
+            (62, false, false),
+            (63, false, false),
+            (64, false, false),
+            (65, false, false),
+            (66, false, false),
+            (67, true, false),
+            (68, false, false),
+            (69, false, false),
+            (70, false, false),
+        ],
+        [
+            (71, true, false),
+            (72, false, false),
+            (73, true, false),
+            (74, false, false),
+            (75, false, false),
+            (76, false, false),
+            (77, false, false),
+            (78, false, false),
+            (79, true, false),
+            (80, false, false),
+        ],
+        [
+            (81, false, false),
+            (82, false, false),
+            (83, true, false),
+            (84, false, false),
+            (85, false, false),
+            (86, false, false),
+            (87, false, false),
+            (88, false, false),
+            (89, true, false),
+            (90, false, false),
+        ],
+        [
+            (91, false, false),
+            (92, false, false),
+            (93, false, false),
+            (94, false, false),
+            (95, false, false),
+            (96, false, false),
+            (97, true, false),
+            (98, false, false),
+            (99, false, false),
+            (100, false, false),
+        ],
     ]
 
     // MARK: - UIViewController
@@ -126,41 +146,68 @@ class PrimeGridViewController: UIViewController, UICollectionViewDataSource, Gri
     override func viewDidLoad() {
         statusBarBackground.backgroundColor = .darkGray
         collectionView.backgroundColor = .darkGray
+        collectionView.register(NumberCell.self,
+                                forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
+                                withReuseIdentifier: PrimeGridViewController.NumberCellReuseIdentifier) // Reusing the cell as a header, shhhh...
         collectionView.register(NumberCell.self, forCellWithReuseIdentifier: PrimeGridViewController.NumberCellReuseIdentifier)
         collectionView.dataSource = self
+        collectionView.contentInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        collectionView.contentOffset = CGPoint(x: -10, y: -10)
 
         gridLayout.delegate = self
         gridLayout.itemSpacing = 10
         gridLayout.transverseItemsCount = 4
+        gridLayout.scrollDirection = .vertical
     }
 
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
 
         statusBarBackgroundHeightConstraint.constant = topLayoutGuide.length
-        collectionView.contentInset = UIEdgeInsets(top: topLayoutGuide.length == 0 ? 10 : 0, left: 10, bottom: 10, right: 10)
     }
 
     // MARK: - UICollectionViewDataSource
 
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return data.count
+    }
+
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return data[section].count
     }
 
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let numberCell = collectionView.dequeueReusableCell(withReuseIdentifier: PrimeGridViewController.NumberCellReuseIdentifier, for: indexPath) as! NumberCell
-        let numberData = data[indexPath.row]
-        numberCell.numberLabel.text = String(data[indexPath.row].number)
+        let numberData = data[indexPath.section][indexPath.row]
+        numberCell.numberLabel.text = String(numberData.number)
         numberCell.numberLabel.font = font(forNumberData: numberData)
         numberCell.numberLabel.sizeToFit()
 
         return numberCell
     }
 
+    public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let numberHeaderCell = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: PrimeGridViewController.NumberCellReuseIdentifier, for: indexPath) as! NumberCell
+        let firstNumberData = data[indexPath.section].first!
+        let lastNumberData = data[indexPath.section].last!
+        numberHeaderCell.contentView.backgroundColor = .lightGray
+        numberHeaderCell.numberLabel.textColor = .black
+        numberHeaderCell.numberLabel.text = "\(firstNumberData.number) ... \(lastNumberData.number)"
+        numberHeaderCell.numberLabel.font = UIFont.boldSystemFont(ofSize: 36)
+        numberHeaderCell.numberLabel.sizeToFit()
+        numberHeaderCell.numberLabel.transform = gridLayout.scrollDirection == .vertical ? .identity : CGAffineTransform(rotationAngle: .pi / -2)
+
+        return numberHeaderCell
+    }
+
     // MARK: - PrimeGridDelegate
 
     func scaleForItem(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, atIndexPath indexPath: IndexPath) -> UInt {
-        return scale(forNumberData: data[indexPath.row])
+        return scale(forNumberData: data[indexPath.section][indexPath.row])
+    }
+
+    func headerLongitudinalDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, transverseDimension: CGFloat) -> CGFloat {
+        return 60
     }
 
     // MARK: - Private

@@ -32,6 +32,8 @@ class NumberCell: UICollectionViewCell {
     }
 
     override func prepareForReuse() {
+        contentView.backgroundColor = .black
+        numberLabel.textColor = .white
         numberLabel.text = nil
     }
 

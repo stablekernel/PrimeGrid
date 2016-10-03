@@ -10,11 +10,16 @@ import UIKit
 
 protocol GridLayoutDelegate: class {
     func scaleForItem(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, atIndexPath indexPath: IndexPath) -> UInt
+    func headerLongitudinalDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, transverseDimension: CGFloat) -> CGFloat
 }
 
 extension GridLayoutDelegate {
     func scaleForItem(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, atIndexPath indexPath: IndexPath) -> UInt {
         return 1
+    }
+
+    func headerLongitudinalDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, transverseDimension: CGFloat) -> CGFloat {
+        return 0
     }
 }
 
@@ -42,6 +47,7 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
     private var itemDimension: CGFloat = 0
 
     private var sectionedItemGrid: Array<Array<Array<Bool>>> = []
+    private var headerAttributesCache: Array<UICollectionViewLayoutAttributes> = []
     private var itemAttributesCache: Array<UICollectionViewLayoutAttributes> = []
 
     private typealias ItemFrame = (section: Int, longitude: Int, transverse: Int, scale: Int)
@@ -60,13 +66,39 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
             contentHeight = transverseDimension
         }
 
+        var additionalSectionSpacing: CGFloat = 0
+        let headerLongitudinalDimension = (delegate ?? self).headerLongitudinalDimension(inCollectionView: collectionView, withLayout: self, transverseDimension: transverseDimension)
+
         itemDimension = (transverseDimension - (CGFloat(transverseItemsCount) * itemSpacing) + itemSpacing) / CGFloat(transverseItemsCount)
 
         for section in 0 ..< collectionView.numberOfSections {
+            let itemCount = collectionView.numberOfItems(inSection: section)
+
+            // Calculate header attributes
+            if headerLongitudinalDimension > 0.0 && itemCount > 0 {
+                if headerAttributesCache.count > 0 {
+                    additionalSectionSpacing += itemSpacing
+                }
+
+                let frame: CGRect
+                if scrollDirection == .vertical {
+                    frame = CGRect(x: 0, y: additionalSectionSpacing, width: transverseDimension, height: headerLongitudinalDimension)
+                } else {
+                    frame = CGRect(x: additionalSectionSpacing, y: 0, width: headerLongitudinalDimension, height: transverseDimension)
+                }
+                let headerLayoutAttributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, with: IndexPath(item: 0, section: section))
+                headerLayoutAttributes.frame = frame
+
+                headerAttributesCache.append(headerLayoutAttributes)
+                additionalSectionSpacing += headerLongitudinalDimension + itemSpacing
+            }
+
+            // Calculate item attributes
+            let sectionOffset = additionalSectionSpacing
             sectionedItemGrid.append([])
 
             var longitude = 0, transverse = 0
-            for item in 0 ..< collectionView.numberOfItems(inSection: section) {
+            for item in 0 ..< itemCount {
                 if transverse == intTransverseItemsCount {
                     // Reached end of row in .vertical or column in .horizontal
                     transverse = 0
@@ -79,15 +111,26 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
                 let (itemFrame, didFitInOriginalFrame) = nextAvailableFrame(startingAt: intendedFrame)
 
                 reserveItemGrid(frame: itemFrame)
-                let itemAttributes = layoutAttributes(for: itemIndexPath, at: itemFrame)
+                let itemAttributes = layoutAttributes(for: itemIndexPath, at: itemFrame, with: sectionOffset)
 
                 itemAttributesCache.append(itemAttributes)
 
                 // Update variable dimension
-                if scrollDirection == .vertical && itemAttributes.frame.maxY > contentHeight {
-                    contentHeight = itemAttributes.frame.maxY
-                } else if itemAttributes.frame.maxX > contentWidth {
-                    contentWidth = itemAttributes.frame.maxX
+                if scrollDirection == .vertical {
+                    if itemAttributes.frame.maxY > contentHeight {
+                        contentHeight = itemAttributes.frame.maxY
+                    }
+                    if itemAttributes.frame.maxY > additionalSectionSpacing {
+                        additionalSectionSpacing = itemAttributes.frame.maxY
+                    }
+                } else {
+                    // .horizontal
+                    if itemAttributes.frame.maxX > contentWidth {
+                        contentWidth = itemAttributes.frame.maxX
+                    }
+                    if itemAttributes.frame.maxX > additionalSectionSpacing {
+                        additionalSectionSpacing = itemAttributes.frame.maxX
+                    }
                 }
 
                 if (didFitInOriginalFrame) {
@@ -99,9 +142,14 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
     }
 
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-        return itemAttributesCache.filter {
+        let headerAttributes = headerAttributesCache.filter {
             $0.frame.intersects(rect)
         }
+        let itemAttributes = itemAttributesCache.filter {
+            $0.frame.intersects(rect)
+        }
+
+        return headerAttributes + itemAttributes
     }
 
     override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
@@ -110,14 +158,18 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
         }
     }
 
+    override func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+        guard elementKind == UICollectionElementKindSectionHeader else { return nil }
+
+        return headerAttributesCache.first {
+            $0.indexPath == indexPath
+        }
+    }
+
     override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
-        if scrollDirection == .vertical,
-            let oldWidth = collectionView?.bounds.width
-        {
+        if scrollDirection == .vertical, let oldWidth = collectionView?.bounds.width {
             return oldWidth != newBounds.width
-        } else if scrollDirection == .horizontal,
-            let oldHeight = collectionView?.bounds.height
-        {
+        } else if scrollDirection == .horizontal, let oldHeight = collectionView?.bounds.height {
             return oldHeight != newBounds.height
         }
 
@@ -128,6 +180,7 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
         super.invalidateLayout()
 
         itemAttributesCache = []
+        headerAttributesCache = []
         contentWidth = 0
         contentHeight = 0
     }
@@ -185,11 +238,11 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
         }
     }
 
-    private func layoutAttributes(for indexPath: IndexPath, at itemFrame: ItemFrame) -> UICollectionViewLayoutAttributes {
+    private func layoutAttributes(for indexPath: IndexPath, at itemFrame: ItemFrame, with sectionOffset: CGFloat) -> UICollectionViewLayoutAttributes {
         let layoutAttributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
 
         let transverseOffset = CGFloat(itemFrame.transverse) * (itemSpacing + itemDimension)
-        let longitudinalOffset = CGFloat(itemFrame.longitude) * (itemSpacing + itemDimension)
+        let longitudinalOffset = CGFloat(itemFrame.longitude) * (itemSpacing + itemDimension) + sectionOffset
         let itemScaledDimension = itemDimension + (CGFloat(itemFrame.scale) * (itemSpacing + itemDimension))
 
         if scrollDirection == .vertical {
