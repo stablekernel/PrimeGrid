@@ -1,6 +1,6 @@
 //
-//  PrimeGridLayout.swift
-//  PrimeGridLayout
+//  PrimeGrid.swift
+//  PrimeGrid
 //
 //  Created by Sean Swezey on 9/29/16.
 //  Copyright © 2016 stable/kernel. All rights reserved.

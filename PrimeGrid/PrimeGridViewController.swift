@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  PrimeGridLayout
+//  PrimeGrid
 //
 //  Created by Sean Swezey on 9/29/16.
 //  Copyright © 2016 stable/kernel. All rights reserved.
@@ -157,7 +157,7 @@ class PrimeGridViewController: UIViewController, UICollectionViewDataSource, Gri
         return numberCell
     }
 
-    // MARK: - PrimeGridLayoutDelegate
+    // MARK: - PrimeGridDelegate
 
     func scaleForItem(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, atIndexPath indexPath: IndexPath) -> UInt {
         return scale(forNumberData: data[indexPath.row])

@@ -17,7 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		141EC8BE1D9D8DF700660B94 /* PrimeGridLayout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PrimeGridLayout.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		141EC8BE1D9D8DF700660B94 /* PrimeGrid.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PrimeGrid.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		141EC8C11D9D8DF700660B94 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		141EC8C31D9D8DF700660B94 /* PrimeGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimeGridViewController.swift; sourceTree = "<group>"; };
 		141EC8C81D9D8DF700660B94 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -42,7 +42,7 @@
 		141EC8B51D9D8DF700660B94 = {
 			isa = PBXGroup;
 			children = (
-				141EC8C01D9D8DF700660B94 /* PrimeGridLayout */,
+				141EC8C01D9D8DF700660B94 /* PrimeGrid */,
 				141EC8BF1D9D8DF700660B94 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -50,12 +50,12 @@
 		141EC8BF1D9D8DF700660B94 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				141EC8BE1D9D8DF700660B94 /* PrimeGridLayout.app */,
+				141EC8BE1D9D8DF700660B94 /* PrimeGrid.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		141EC8C01D9D8DF700660B94 /* PrimeGridLayout */ = {
+		141EC8C01D9D8DF700660B94 /* PrimeGrid */ = {
 			isa = PBXGroup;
 			children = (
 				141EC8C11D9D8DF700660B94 /* AppDelegate.swift */,
@@ -67,15 +67,15 @@
 				141EC8CD1D9D8DF700660B94 /* Info.plist */,
 				141EC8D71D9D953D00660B94 /* LaunchScreen.xib */,
 			);
-			path = PrimeGridLayout;
+			path = PrimeGrid;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		141EC8BD1D9D8DF700660B94 /* PrimeGridLayout */ = {
+		141EC8BD1D9D8DF700660B94 /* PrimeGrid */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 141EC8D01D9D8DF700660B94 /* Build configuration list for PBXNativeTarget "PrimeGridLayout" */;
+			buildConfigurationList = 141EC8D01D9D8DF700660B94 /* Build configuration list for PBXNativeTarget "PrimeGrid" */;
 			buildPhases = (
 				141EC8BA1D9D8DF700660B94 /* Sources */,
 				141EC8BB1D9D8DF700660B94 /* Frameworks */,
@@ -85,9 +85,9 @@
 			);
 			dependencies = (
 			);
-			name = PrimeGridLayout;
-			productName = PrimeGridLayout;
-			productReference = 141EC8BE1D9D8DF700660B94 /* PrimeGridLayout.app */;
+			name = PrimeGrid;
+			productName = PrimeGrid;
+			productReference = 141EC8BE1D9D8DF700660B94 /* PrimeGrid.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -107,7 +107,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 141EC8B91D9D8DF700660B94 /* Build configuration list for PBXProject "PrimeGridLayout" */;
+			buildConfigurationList = 141EC8B91D9D8DF700660B94 /* Build configuration list for PBXProject "PrimeGrid" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -120,7 +120,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				141EC8BD1D9D8DF700660B94 /* PrimeGridLayout */,
+				141EC8BD1D9D8DF700660B94 /* PrimeGrid */,
 			);
 		};
 /* End PBXProject section */
@@ -251,9 +251,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = R9AR4U6NWF;
-				INFOPLIST_FILE = PrimeGridLayout/Info.plist;
+				INFOPLIST_FILE = PrimeGrid/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.stablekernel.PrimeGridLayout;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stablekernel.primegrid;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -264,9 +264,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = R9AR4U6NWF;
-				INFOPLIST_FILE = PrimeGridLayout/Info.plist;
+				INFOPLIST_FILE = PrimeGrid/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.stablekernel.PrimeGridLayout;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stablekernel.primegrid;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -275,7 +275,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		141EC8B91D9D8DF700660B94 /* Build configuration list for PBXProject "PrimeGridLayout" */ = {
+		141EC8B91D9D8DF700660B94 /* Build configuration list for PBXProject "PrimeGrid" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				141EC8CE1D9D8DF700660B94 /* Debug */,
@@ -284,13 +284,14 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		141EC8D01D9D8DF700660B94 /* Build configuration list for PBXNativeTarget "PrimeGridLayout" */ = {
+		141EC8D01D9D8DF700660B94 /* Build configuration list for PBXNativeTarget "PrimeGrid" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				141EC8D11D9D8DF700660B94 /* Debug */,
 				141EC8D21D9D8DF700660B94 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:PrimeGridLayout.xcodeproj">
+      location = "self:/Users/sean/Code/PrimeGridLayout/PrimeGrid.xcodeproj">
    </FileRef>
 </Workspace>
