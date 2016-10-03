@@ -10,7 +10,7 @@
 		141EC8C21D9D8DF700660B94 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141EC8C11D9D8DF700660B94 /* AppDelegate.swift */; };
 		141EC8C41D9D8DF700660B94 /* PrimeGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141EC8C31D9D8DF700660B94 /* PrimeGridViewController.swift */; };
 		141EC8C91D9D8DF700660B94 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 141EC8C81D9D8DF700660B94 /* Assets.xcassets */; };
-		141EC8D41D9D8EF800660B94 /* PrimeGridLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141EC8D31D9D8EF800660B94 /* PrimeGridLayout.swift */; };
+		141EC8D41D9D8EF800660B94 /* GridLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141EC8D31D9D8EF800660B94 /* GridLayout.swift */; };
 		141EC8D61D9D906B00660B94 /* NumberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141EC8D51D9D906B00660B94 /* NumberCell.swift */; };
 		141EC8D81D9D953D00660B94 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 141EC8D71D9D953D00660B94 /* LaunchScreen.xib */; };
 		141EC8DA1D9EBCF400660B94 /* PrimeGridViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 141EC8D91D9EBCF400660B94 /* PrimeGridViewController.xib */; };
@@ -22,7 +22,7 @@
 		141EC8C31D9D8DF700660B94 /* PrimeGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimeGridViewController.swift; sourceTree = "<group>"; };
 		141EC8C81D9D8DF700660B94 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		141EC8CD1D9D8DF700660B94 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		141EC8D31D9D8EF800660B94 /* PrimeGridLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrimeGridLayout.swift; sourceTree = "<group>"; };
+		141EC8D31D9D8EF800660B94 /* GridLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GridLayout.swift; sourceTree = "<group>"; };
 		141EC8D51D9D906B00660B94 /* NumberCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberCell.swift; sourceTree = "<group>"; };
 		141EC8D71D9D953D00660B94 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
 		141EC8D91D9EBCF400660B94 /* PrimeGridViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PrimeGridViewController.xib; sourceTree = "<group>"; };
@@ -59,7 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				141EC8C11D9D8DF700660B94 /* AppDelegate.swift */,
-				141EC8D31D9D8EF800660B94 /* PrimeGridLayout.swift */,
+				141EC8D31D9D8EF800660B94 /* GridLayout.swift */,
 				141EC8D51D9D906B00660B94 /* NumberCell.swift */,
 				141EC8C31D9D8DF700660B94 /* PrimeGridViewController.swift */,
 				141EC8D91D9EBCF400660B94 /* PrimeGridViewController.xib */,
@@ -144,7 +144,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				141EC8D61D9D906B00660B94 /* NumberCell.swift in Sources */,
-				141EC8D41D9D8EF800660B94 /* PrimeGridLayout.swift in Sources */,
+				141EC8D41D9D8EF800660B94 /* GridLayout.swift in Sources */,
 				141EC8C41D9D8DF700660B94 /* PrimeGridViewController.swift in Sources */,
 				141EC8C21D9D8DF700660B94 /* AppDelegate.swift in Sources */,
 			);

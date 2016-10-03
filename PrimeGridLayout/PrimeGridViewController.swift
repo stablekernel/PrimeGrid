@@ -10,13 +10,13 @@ import UIKit
 
 typealias NumberData = (number: Int, isPrime: Bool, isMersennePrime: Bool)
 
-class PrimeGridViewController: UIViewController, UICollectionViewDataSource, PrimeGridLayoutDelegate {
+class PrimeGridViewController: UIViewController, UICollectionViewDataSource, GridLayoutDelegate {
     static let NumberCellReuseIdentifier = "NumberCellReuseIdentifier"
 
     @IBOutlet weak var statusBarBackground: UIView!
     @IBOutlet weak var statusBarBackgroundHeightConstraint: NSLayoutConstraint!
     @IBOutlet var collectionView: UICollectionView!
-    @IBOutlet var gridLayout: PrimeGridLayout!
+    @IBOutlet var gridLayout: GridLayout!
 
     let data: Array<NumberData> = [
         (1, false, false),

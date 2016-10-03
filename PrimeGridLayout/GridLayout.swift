@@ -8,17 +8,17 @@
 
 import UIKit
 
-protocol PrimeGridLayoutDelegate: class {
+protocol GridLayoutDelegate: class {
     func scaleForItem(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, atIndexPath indexPath: IndexPath) -> UInt
 }
 
-extension PrimeGridLayoutDelegate {
+extension GridLayoutDelegate {
     func scaleForItem(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, atIndexPath indexPath: IndexPath) -> UInt {
         return 1
     }
 }
 
-class PrimeGridLayout: UICollectionViewLayout, PrimeGridLayoutDelegate {
+class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
     override var collectionViewContentSize: CGSize {
         return CGSize(width: contentWidth, height: contentHeight)
     }
@@ -34,7 +34,7 @@ class PrimeGridLayout: UICollectionViewLayout, PrimeGridLayoutDelegate {
         }
     }
 
-    weak var delegate: PrimeGridLayoutDelegate?
+    weak var delegate: GridLayoutDelegate?
 
     private var intTransverseItemsCount = 1
     private var contentWidth: CGFloat = 0
@@ -110,20 +110,26 @@ class PrimeGridLayout: UICollectionViewLayout, PrimeGridLayoutDelegate {
         }
     }
 
+    override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+        if scrollDirection == .vertical,
+            let oldWidth = collectionView?.bounds.width
+        {
+            return oldWidth != newBounds.width
+        } else if scrollDirection == .horizontal,
+            let oldHeight = collectionView?.bounds.height
+        {
+            return oldHeight != newBounds.height
+        }
+
+        return false
+    }
+
     override func invalidateLayout() {
         super.invalidateLayout()
 
         itemAttributesCache = []
         contentWidth = 0
         contentHeight = 0
-    }
-
-    override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
-        if let oldWidth = collectionView?.bounds.width {
-            return oldWidth != newBounds.width
-        }
-
-        return false
     }
 
     // MARK: - Private
