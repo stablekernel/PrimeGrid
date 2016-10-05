@@ -98,7 +98,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0800;
 				LastUpgradeCheck = 0800;
-				ORGANIZATIONNAME = stable/kernel;
+				ORGANIZATIONNAME = "stable|kernel";
 				TargetAttributes = {
 					141EC8BD1D9D8DF700660B94 = {
 						CreatedOnToolsVersion = 8.0;
