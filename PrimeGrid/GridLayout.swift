@@ -33,8 +33,14 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
         return CGSize(width: contentWidth, height: contentHeight)
     }
 
+    // User-configurable 'knobs'
+
     var scrollDirection: UICollectionViewScrollDirection = .vertical
+
+    // Spacing between items
     var itemSpacing: CGFloat = 0
+
+    // Prevent the user from giving an invalid fixedDivisionCount
     var fixedDivisionCount: UInt {
         get {
             return UInt(intFixedDivisionCount)
@@ -46,16 +52,24 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
 
     weak var delegate: GridLayoutDelegate?
 
+    /// Backing variable for fixedDivisionCount, is an Int since indices don't like UInt
     private var intFixedDivisionCount = 1
     private var contentWidth: CGFloat = 0
     private var contentHeight: CGFloat = 0
     private var itemFixedDimension: CGFloat = 0
     private var itemFlexibleDimension: CGFloat = 0
 
+    /// This represents a 2 dimensional array for each section, indicating whether each block in the grid is occupied
+    /// It is grown dynamically as needed to fit every item into a grid
     private var sectionedItemGrid: Array<Array<Array<Bool>>> = []
-    private var headerAttributesCache: Array<UICollectionViewLayoutAttributes> = []
+
+    /// The cache built up during the `prepare` function
     private var itemAttributesCache: Array<UICollectionViewLayoutAttributes> = []
 
+    /// The header cache built up during the `prepare` function
+    private var headerAttributesCache: Array<UICollectionViewLayoutAttributes> = []
+
+    /// A convenient tuple for working with items
     private typealias ItemFrame = (section: Int, flexibleIndex: Int, fixedIndex: Int, scale: Int)
 
     // MARK: - UICollectionView Layout
@@ -115,6 +129,8 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
                 let itemIndexPath = IndexPath(item: item, section: section)
                 let itemScale = indexableScale(forItemAt: itemIndexPath)
                 let intendedFrame = ItemFrame(section, flexibleIndex, fixedIndex, itemScale)
+
+                // Find a place for the item in the grid
                 let (itemFrame, didFitInOriginalFrame) = nextAvailableFrame(startingAt: intendedFrame)
 
                 reserveItemGrid(frame: itemFrame)
@@ -122,7 +138,7 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
 
                 itemAttributesCache.append(itemAttributes)
 
-                // Update variable dimension
+                // Update flexible dimension
                 if scrollDirection == .vertical {
                     if itemAttributes.frame.maxY > contentHeight {
                         contentHeight = itemAttributes.frame.maxY
@@ -217,12 +233,14 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
             newFrame = ItemFrame(originalFrame.section, flexibleIndex, fixedIndex, originalFrame.scale)
         }
 
+        // Fits iff we never had to walk the grid to find a position
         return (newFrame, flexibleIndex == originalFrame.flexibleIndex && fixedIndex == originalFrame.fixedIndex)
     }
 
+    /// Checks the grid from the origin to the origin + scale for occupied blocks
     private func isSpaceAvailable(for frame: ItemFrame) -> Bool {
         for flexibleIndex in frame.flexibleIndex ... frame.flexibleIndex + frame.scale {
-            // Ensure we won't get off the end of the array
+            // Ensure we won't go off the end of the array
             while sectionedItemGrid[frame.section].count <= flexibleIndex {
                 sectionedItemGrid[frame.section].append(Array(repeating: false, count: intFixedDivisionCount))
             }
