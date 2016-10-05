@@ -156,7 +156,7 @@ class PrimeGridViewController: UIViewController, UICollectionViewDataSource, Gri
 
         gridLayout.delegate = self
         gridLayout.itemSpacing = 10
-        gridLayout.transverseItemsCount = 4
+        gridLayout.fixedDivisionCount = 4
         gridLayout.scrollDirection = .vertical
     }
 
@@ -206,11 +206,11 @@ class PrimeGridViewController: UIViewController, UICollectionViewDataSource, Gri
         return scale(forNumberData: data[indexPath.section][indexPath.row])
     }
 
-    func itemLongitudinalDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, transverseDimension: CGFloat) -> CGFloat {
-        return 0.8 * transverseDimension
+    func itemFlexibleDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, fixedDimension: CGFloat) -> CGFloat {
+        return 0.8 * fixedDimension
     }
 
-    func headerLongitudinalDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, transverseDimension: CGFloat) -> CGFloat {
+    func headerFlexibleDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, fixedDimension: CGFloat) -> CGFloat {
         return 60
     }
 
