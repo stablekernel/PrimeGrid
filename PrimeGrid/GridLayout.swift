@@ -135,7 +135,7 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
 
             var flexibleIndex = 0, fixedIndex = 0
             for item in 0 ..< itemCount {
-                if fixedIndex == intFixedDivisionCount {
+                if fixedIndex >= intFixedDivisionCount {
                     // Reached end of row in .vertical or column in .horizontal
                     fixedIndex = 0
                     flexibleIndex += 1
@@ -172,7 +172,7 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
                 }
 
                 if (didFitInOriginalFrame) {
-                    fixedIndex += 1
+                    fixedIndex += 1 + itemFrame.scale
                 }
             }
         }
