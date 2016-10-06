@@ -32,6 +32,7 @@ class PrimeGridViewController: UIViewController, UICollectionViewDataSource, Gri
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var gridLayout: GridLayout!
 
+    let useSquareCells = true
     let useSections = false
     let data: Array<Array<NumberData>> = [
         [
@@ -222,7 +223,7 @@ class PrimeGridViewController: UIViewController, UICollectionViewDataSource, Gri
     }
 
     func itemFlexibleDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, fixedDimension: CGFloat) -> CGFloat {
-        return 0.8 * fixedDimension
+        return useSquareCells ? fixedDimension : 0.8 * fixedDimension
     }
 
     func headerFlexibleDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, fixedDimension: CGFloat) -> CGFloat {
