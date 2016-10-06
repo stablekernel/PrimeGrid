@@ -126,7 +126,11 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
                 headerLayoutAttributes.frame = frame
 
                 headerAttributesCache.append(headerLayoutAttributes)
-                additionalSectionSpacing += headerFlexibleDimension + itemSpacing
+                additionalSectionSpacing += headerFlexibleDimension
+            }
+
+            if headerFlexibleDimension > 0.0 || section > 0 {
+                additionalSectionSpacing += itemSpacing
             }
 
             // Calculate item attributes

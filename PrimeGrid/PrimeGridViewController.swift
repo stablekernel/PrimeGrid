@@ -32,6 +32,7 @@ class PrimeGridViewController: UIViewController, UICollectionViewDataSource, Gri
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var gridLayout: GridLayout!
 
+    let useSections = false
     let data: Array<Array<NumberData>> = [
         [
             (1, false, false),
@@ -183,18 +184,18 @@ class PrimeGridViewController: UIViewController, UICollectionViewDataSource, Gri
     // MARK: - UICollectionViewDataSource
 
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return data.count
+        return useSections ? data.count : 1
     }
 
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return data[section].count
+        return useSections ? data[section].count : data.reduce(0) { $0 + $1.count }
     }
 
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let numberCell = collectionView.dequeueReusableCell(withReuseIdentifier: PrimeGridViewController.NumberCellReuseIdentifier, for: indexPath) as! NumberCell
-        let numberData = data[indexPath.section][indexPath.row]
-        numberCell.numberLabel.text = String(numberData.number)
-        numberCell.numberLabel.font = font(forNumberData: numberData)
+        let cellNumberData = numberData(forItemAt: indexPath)
+        numberCell.numberLabel.text = String(cellNumberData.number)
+        numberCell.numberLabel.font = font(forNumberData: cellNumberData)
         numberCell.numberLabel.sizeToFit()
 
         return numberCell
@@ -217,7 +218,7 @@ class PrimeGridViewController: UIViewController, UICollectionViewDataSource, Gri
     // MARK: - PrimeGridDelegate
 
     func scaleForItem(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, atIndexPath indexPath: IndexPath) -> UInt {
-        return scale(forNumberData: data[indexPath.section][indexPath.row])
+        return scale(forNumberData: numberData(forItemAt: indexPath))
     }
 
     func itemFlexibleDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, fixedDimension: CGFloat) -> CGFloat {
@@ -225,10 +226,20 @@ class PrimeGridViewController: UIViewController, UICollectionViewDataSource, Gri
     }
 
     func headerFlexibleDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, fixedDimension: CGFloat) -> CGFloat {
-        return 60
+        return useSections ? 60 : 0
     }
 
     // MARK: - Private
+
+    private func numberData(forItemAt indexPath: IndexPath) -> NumberData {
+        if useSections {
+            return data[indexPath.section][indexPath.row]
+        } else {
+            let section = indexPath.row / 10
+            let row = indexPath.row % 10
+            return data[section][row]
+        }
+    }
 
     private func font(forNumberData numberData: NumberData) -> UIFont {
         switch numberData {
