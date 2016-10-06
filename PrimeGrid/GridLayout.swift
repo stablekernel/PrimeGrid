@@ -89,7 +89,9 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
     // MARK: - UICollectionView Layout
 
     override func prepare() {
-        guard let collectionView = collectionView else { return }
+        // On rotation, UICollectionView sometimes calls prepare without calling invalidateLayout
+        guard itemAttributesCache.isEmpty, headerAttributesCache.isEmpty,
+            let collectionView = collectionView else { return }
 
         let fixedDimension: CGFloat
         if scrollDirection == .vertical {
@@ -239,7 +241,7 @@ class GridLayout: UICollectionViewLayout, GridLayoutDelegate {
             fixedIndex += 1
 
             // Reached end of fixedIndex, restart on next flexibleIndex
-            if fixedIndex == intFixedDivisionCount || fixedIndex + originalFrame.scale == intFixedDivisionCount {
+            if fixedIndex + originalFrame.scale >= intFixedDivisionCount {
                 fixedIndex = 0
                 flexibleIndex += 1
             }
