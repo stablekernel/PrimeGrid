@@ -163,7 +163,7 @@ class PrimeGridViewController: UIViewController, UICollectionViewDataSource, Gri
         statusBarBackground.backgroundColor = .darkGray
         collectionView.backgroundColor = .darkGray
         collectionView.register(NumberCell.self,
-                                forSupplementaryViewOfKind: UICollectionElementKindSectionHeader,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                 withReuseIdentifier: PrimeGridViewController.NumberCellReuseIdentifier) // Reusing the cell as a header, shhhh...
         collectionView.register(NumberCell.self, forCellWithReuseIdentifier: PrimeGridViewController.NumberCellReuseIdentifier)
         collectionView.dataSource = self
